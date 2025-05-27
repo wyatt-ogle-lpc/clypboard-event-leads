@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Thank You</title>
+
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+  </head>
+  <body>
+    <div style="text-align:center;">
+      <%= image_tag "mouse.png", alt: "Logo", class: "mouseLogo" %>
+    </div>
+    <div style="max-width: 500px; margin: 100px auto 0 auto; text-align: center;">
+      <h2>Thanks for submitting!</h2>
+      <p class="subtext">We'll be in touch.</p>
+      <%= link_to "New Entry", root_path, class: "btn" %>
+    </div>
+  </body>
+</html>

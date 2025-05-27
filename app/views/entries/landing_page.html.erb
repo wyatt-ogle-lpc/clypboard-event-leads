@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head >
+    <title>Lead Entry</title>
+    <!-- Google Fonts: Bebas Neue -->
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+
+
+
+    <%= stylesheet_link_tag 'application', media: 'all' %>
+  </head>
+  <body>
+     <div class="logo-container">
+      <%= image_tag "logo.png", alt: "Logo", class: "logo" %>
+    </div>
+    <h1 style="text-align:center;">Enter Your Information</h1>
+
+
+    <%= form_with model: @entry, url: entries_path, local: true do |form| %>
+    <div class="form-row">
+      <div class="form-field">
+        <%= form.label :name, "Name" %>
+        <%= form.text_field :name, required: true, placeholder: "John Smith" %>
+        <% if @entry.errors[:name].any? %>
+          <p class="error"><%= @entry.errors[:name].join(", ") %></p>
+        <% end %>
+      </div>
+      <div class="form-field">
+      <%= form.label :company_name, "Company" %>
+      <%= form.text_field :company_name, placeholder: "Lloyd Pest Control" %>
+      <% if @entry.errors[:company_name].any? %>
+        <p class="error"><%= @entry.errors[:company_name].join(", ") %></p>
+      <% end %>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <%= form.label :property_name, "Property Name" %>
+        <%= form.text_field :property_name, placeholder: "LPC Corporate Office" %>
+        <% if @entry.errors[:property_name].any? %>
+          <p class="error"><%= @entry.errors[:property_name].join(", ") %></p>
+        <% end %>
+      </div>
+      <div class="form-field">
+        <%= form.label :address, "Property Address" %>
+        <%= form.text_field :address, required: true, placeholder: "1234 Friars Way" %>
+        <% if @entry.errors[:address].any? %>
+          <p class="error"><%= @entry.errors[:address].join(", ") %></p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-field">
+        <%= form.label :email, "Email" %>
+        <%= form.email_field :email, required: true, placeholder: "you@email.com" %>
+        <% if @entry.errors[:email].any? %>
+          <p class="error"><%= @entry.errors[:email].join(", ") %></p>
+        <% end %>
+      </div>
+      <div class="form-field">
+        <%= form.label :phone_number, "Phone Number" %>
+        <%= form.telephone_field :phone_number, required: true, placeholder: "(123) 456-7890", id: "phone_number" %>
+        <% if @entry.errors[:phone_number].any? %>
+          <p class="error"><%= @entry.errors[:phone_number].join(", ") %></p>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <%= form.submit "Submit"%>
+    </div>
+
+    <% end %>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        var input = document.getElementById("phone_number");
+        if (!input) return;
+        
+        input.addEventListener("input", function(e) {
+          var x = input.value.replace(/\D/g, '').substring(0,10); // Only numbers, max 10 digits
+          var formatted = "";
+
+          if (x.length > 0) {
+            formatted = "(" + x.substring(0,3);
+          }
+          if (x.length >= 4) {
+            formatted += ") " + x.substring(3,6);
+          }
+          if (x.length >= 7) {
+            formatted += "\u2009"+ "-" + "\u2009"+ x.substring(6,10);
+          }
+          input.value = formatted;
+        });
+      });
+    </script>
+
+
+  </body>
+</html>
