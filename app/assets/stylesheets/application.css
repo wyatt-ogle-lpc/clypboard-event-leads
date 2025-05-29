@@ -23,9 +23,23 @@
 }
 
 @font-face {
+  font-family: 'Proxima Nova SCOSF Condensed Light';
+  src: url('/fonts/PROXIMA NOVA SCOSF CONDENSED LIGHT.OTF') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Bebas Neue Bold';
   src: url('/fonts/BEBASNEUE-BOLD.OTF') format('opentype');
   font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Bebas Neue Regular';
+  src: url('/fonts/BEBASNEUE-REGULAR.OTF') format('opentype');
+  font-weight: normal;
   font-style: normal;
 }
 
@@ -50,10 +64,51 @@ body {
     text-align: left;
   }
 
+  .checkbox-group {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    margin-top: 10px;
+  }
+  .checkbox-group label {
+    min-width: unset;
+    white-space: nowrap;
+  }
+  
+  /* Responsive: stack below 700px width */
+  @media (max-width: 700px) {
+    .form-row {
+      flex-direction: column;
+    }
+    .form-field, .checkbox-field {
+      margin-right: 0 !important;
+      min-width: 0 !important;
+    }
+    .checkbox-group {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+
+  textarea {
+    font-family: 'Proxima Nova Condensed Regular', sans-serif;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #1c1c1c;
+    border-radius: 4px;
+    background-color: #FFFFFF;
+    color: #1c1c1c;
+    min-height: 50px; /* makes it visibly bigger */
+    resize: vertical;
+    font-size: 1em;
+  }  
+
   .logo, .mouseLogo {
     display: block;
     text-align: left;
-    margin: 0 auto 20px;
+    margin: 0 auto bpx;
     max-width: 250px; /* Adjust based on your logo size */
     display: inline-block; /* Ensures the logo behaves as an inline element */
     height: auto;
@@ -61,19 +116,30 @@ body {
   }
 
   .mouseLogo{
-    margin-top: 30px;
-    margin-bottom: 5px;
+    margin-top: 70px;
+    margin-bottom: -10px;
+    max-width: 300px;
   }
   
-  h1, h2{
+  h1, h2, h5{
     font-family: 'Bebas Neue Bold', sans-serif;;
     color: #1c1c1c;
     font-size: 3.5em;
     margin-bottom: 20px;
+    margin-top: 20px;
   }
 
   h2{
     margin-top: -50px;
+  }
+
+  h3{
+    text-align: center;
+    font-family: 'Proxima Nova SCOSF Condensed Light', sans-serif;
+    color: #1c1c1c;
+    font-size: 2em;
+    margin-bottom: 25px;
+    margin-top: -20px
 
   }
 
@@ -87,11 +153,15 @@ body {
     margin-bottom: 45px;
   }
   
-  label {
+  label, .boxlabel {
     display: block;
     margin-bottom: 2px;
     color: #1c1c1c;
     font-size: 1.1em;
+  }
+
+  .boxlabel {
+    margin-top: 15px;
   }
   
   input[type="text"], input[type="email"], input[type="url"], input[type="tel"] {
@@ -106,7 +176,9 @@ body {
   
   .form-actions {
     text-align: center;
-    margin-top: 24px;  /* Add space above the button */
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
   }
 
   ::placeholder {
@@ -117,14 +189,15 @@ body {
     font-family: 'Proxima Nova SCOSF Condensed Regular';
     background-color: #9c481a;
     color: #FFFFFF;
-    padding: 10px 25px;      /* Make the button taller and wider */
+    padding: 10px;      /* Make the button taller and wider */
     font-size: 1.5em; 
     border: none;
     border-radius: 4px;
-    margin-top: 6px;
+    margin-top: 10px;
     cursor: pointer;
     
   }
+  
   
   input[type="submit"]:hover {
     background-color: #7e3813;
@@ -147,10 +220,13 @@ body {
     cursor: pointer;
     text-decoration: none;
   }
+
   
   .btn:hover {
     background-color: #7e3813;
   }
+
+  
 
   .form-row {
     display: flex;

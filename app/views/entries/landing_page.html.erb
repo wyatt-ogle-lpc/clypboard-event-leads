@@ -3,10 +3,7 @@
   <head >
     <title>Lead Entry</title>
     <!-- Google Fonts: Bebas Neue -->
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
-
-
-
+    <script src="https://maps.googleapis.com/maps/api/js?key=<%= Rails.application.credentials.dig(:google_maps, :api_key) %>&libraries=places&callback=initAutocomplete" async defer></script>
 
     <%= stylesheet_link_tag 'application', media: 'all' %>
   </head>
@@ -15,9 +12,10 @@
       <%= image_tag "logo.png", alt: "Logo", class: "logo" %>
     </div>
     <h1 style="text-align:center;">Enter Your Information</h1>
+    <h3 style="text-align:center;">click submit to play a game</h3>
 
 
-    <%= form_with model: @entry, url: entries_path, local: true do |form| %>
+    <%= form_with model: @entry, url: @expo.present? ? expo_entries_path(@expo) : entries_path, data: { turbo: false }, local: true do |form| %>
     <div class="form-row">
       <div class="form-field">
         <%= form.label :name, "Name" %>
@@ -45,7 +43,7 @@
       </div>
       <div class="form-field">
         <%= form.label :address, "Property Address" %>
-        <%= form.text_field :address, required: true, placeholder: "1234 Friars Way" %>
+        <%= form.text_field :address, required: true, placeholder: "1234 Friars Way", id: "entry_address" %>
         <% if @entry.errors[:address].any? %>
           <p class="error"><%= @entry.errors[:address].join(", ") %></p>
         <% end %>
@@ -69,13 +67,48 @@
       </div>
     </div>
 
+<div class="form-row">
+  <!-- Comments: Take full left width -->
+  <div class="form-field" style="margin-right: 16px; min-width: 0;">
+    <%= form.label :comments, "Comments" %>
+    <%= form.text_area :comments, rows: 2.5, placeholder: "Feel free to enter any additional notes..." %>
+    <% if @entry.errors[:comments].any? %>
+    <p class="error"><%= @entry.errors[:comments].join(", ") %></p>
+  <% end %>
+  </div>
+  <!-- Checkboxes: 2x2 grid on right -->
+  <div class="form-field checkbox-field" style="flex: 1; min-width: 180px;">
+    <%= form.label :options, "Select Issues" %>
+    <div class="checkbox-group">
+  
+      <label><%= form.check_box :general_pest %> General Pest</label>
+      <label><%= form.check_box :termites %> Termites</label>
+      <label><%= form.check_box :rodents %> Rodents</label>
+      <label><%= form.check_box :bedbugs %> Bedbugs</label>
+      <label><%= form.check_box :other %> Other</label>
+    </div>
+  </div>
+</div>
+  
+
     <div class="form-actions">
-      <%= form.submit "Submit"%>
+      <%= form.submit "Submit", class: "btn" %>
     </div>
 
     <% end %>
 
     <script>
+
+    function initAutocomplete() {
+      var input = document.getElementById('entry_address');
+      if (input) {
+        var autocomplete = new google.maps.places.Autocomplete(input, {
+          types: ['address'],
+          componentRestrictions: { country: 'us' }
+        });
+      }
+    }
+
       document.addEventListener("DOMContentLoaded", function() {
         var input = document.getElementById("phone_number");
         if (!input) return;
@@ -95,8 +128,16 @@
           }
           input.value = formatted;
         });
+        // Initialize Places Autocomplete (after Google script is loaded)
+    if (typeof google !== "undefined" && google.maps && google.maps.places) {
+      initAutocomplete();
+    } else {
+      window.initAutocomplete = initAutocomplete;
+    }
       });
     </script>
+
+
 
 
   </body>

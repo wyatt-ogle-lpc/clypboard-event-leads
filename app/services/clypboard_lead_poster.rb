@@ -48,6 +48,15 @@ class ClypboardLeadPoster
       Address: #{entry.address}
       Email: #{entry.email}
       Phone: #{entry.phone_number}
+      Comments: #{entry.comments}
+
+      General Pest: #{entry.general_pest ? 'Yes' : 'No'}
+      Termites: #{entry.termites ? 'Yes' : 'No'}
+      Rodents: #{entry.rodents ? 'Yes' : 'No'}
+      Bedbugs: #{entry.bedbugs ? 'Yes' : 'No'}
+      Other: #{entry.other ? 'Yes' : 'No'}
+
+      Expo: #{entry.expo.to_s.gsub(/[-_%20]/, ' ').squeeze(' ').strip.split.map(&:capitalize).join(' ')}
     DESC
   end
 end

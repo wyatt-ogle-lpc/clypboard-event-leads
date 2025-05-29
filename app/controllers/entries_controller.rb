@@ -2,34 +2,58 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-def submit_lead_to_clypboard(entry)
-
-end
-
-
 class EntriesController < ApplicationController
     def landing_page
-      @entry = Entry.new
-    end
+      @expo = params[:expo] || params.dig(:entry, :expo)
+      # You can pass @expo to the view, and pre-fill it or hide it in a hidden field
+      @entry = Entry.new(expo: @expo)    end
   
-    def create
-      @entry = Entry.new(entry_params)
+      def game
+        @skipped = false
+      end
 
-    # Validate email with ZeroBounce before saving
-    email_status = validate_email_with_zerobounce(@entry.email)
-    if email_status != "valid"
-      @entry.errors.add(:email, "Please enter a valid email address")
+  def create
+    @expo = params[:expo] || params.dig(:entry, :expo)
+    @entry = Entry.new(entry_params.merge(expo: @expo))
+
+      # Validate email with ZeroBounce before saving
+      email_status = validate_email_with_zerobounce(@entry.email)
+      if email_status != "valid"
+        @entry.errors.add(:email, "Please enter a valid email address")
+        render :landing_page, status: :unprocessable_entity
+        return
+      end
+
+      # Address validation using Google Geocoding API
+    geocode_result = geocode_address(@entry.address)
+    if geocode_result["status"] == "OK"
+      location = geocode_result["results"][0]["geometry"]["location"]
+      @entry.latitude = location["lat"]
+      @entry.longitude = location["lng"]
+    else
+      @entry.errors.add(:address, "Please enter a valid address")
       render :landing_page, status: :unprocessable_entity
       return
     end
 
-      if @entry.save
-        submit_lead_to_clypboard(@entry)
-        redirect_to thanks_path
-      else
-        render :landing_page, status: :unprocessable_entity
-      end
-    end
+        if @entry.save
+          #submit_lead_to_clypboard(@entry)
+          if @expo.present?
+            redirect_to expo_game_path(expo: @expo)
+          else
+            redirect_to game_path
+          end
+          
+        else
+          render :landing_page, status: :unprocessable_entity
+        end
+  end
+
+  def game
+    @expo = params[:expo]
+    # Set up any game variables here, or just render the game view
+  end
+  
 
     def submit_lead_to_clypboard(entry)
       ClypboardLeadPoster.create_lead(entry)
@@ -37,11 +61,33 @@ class EntriesController < ApplicationController
   
     def thanks
     end
+
+    def geocode_address(address)
+      api_key = Rails.application.credentials.dig(:google_maps, :api_key)
+      url = URI("https://maps.googleapis.com/maps/api/geocode/json?address=#{URI.encode_www_form_component(address)}&key=#{api_key}")
+      response = Net::HTTP.get(url)
+      JSON.parse(response)
+    end
+    
   
     private
   
     def entry_params
-      params.require(:entry).permit(:name, :company_name, :property_name, :address, :email, :phone_number)
+      params.require(:entry).permit(
+        :name,
+        :company_name,
+        :property_name,
+        :address,
+        :email,
+        :phone_number,
+        :comments,         # add this for textarea
+        :general_pest,         # add this for checkbox 1
+        :termites,         # add this for checkbox 2
+        :rodents,         # add this for checkbox 3
+        :bedbugs,         # add this for checkbox 4
+        :other,
+        :expo
+      )
     end
 
     def validate_email_with_zerobounce(email)

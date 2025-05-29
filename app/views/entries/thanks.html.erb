@@ -10,9 +10,17 @@
       <%= image_tag "mouse.png", alt: "Logo", class: "mouseLogo" %>
     </div>
     <div style="max-width: 500px; margin: 100px auto 0 auto; text-align: center;">
-      <h2>Thanks for submitting!</h2>
+      <% if params[:skipped] == "true" %>
+        <h2>Thanks!</h2>
+      <% else %>
+        <h2>Thanks for playing!</h2>
+      <% end %>
       <p class="subtext">We'll be in touch.</p>
-      <%= link_to "New Entry", root_path, class: "btn" %>
-    </div>
+      <% if params[:expo].present? %>
+        <%= link_to "New Entry", expo_entries_path(params[:expo]), class: "btn" %>
+      <% else %>
+        <%= link_to "New Entry", root_path, class: "btn" %>
+      <% end %> 
+      </div>
   </body>
 </html>

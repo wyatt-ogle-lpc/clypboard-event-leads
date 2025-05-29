@@ -1,0 +1,66 @@
+
+body{
+    margin-top: 80px;
+}
+  .btn {
+    background-color: #9c481a;
+    color: #fff;
+    font-size: 1.5em;
+    padding: 12px 26px;
+    border: none;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    width: 150px;
+    text-align: center;
+    align-self: center;
+  }
+  .btn:hover {
+    background: #7e3813;
+  }
+
+  .skip_game_btn{
+    color: #fffbe9;
+    letter-spacing:1px;
+    font-size:1em;
+    font-weight:bold;
+    margin-top:2em; 
+    margin-bottom: 1em;
+    font-family: 'Proxima Nova Condensed Regular', sans-serif;
+    text-decoration: none;
+  }
+  .skip_game_btn:hover{
+    color: #9e9e9e;
+
+  }
+
+  h4, h6{
+    text-align: center;
+    font-family: 'Proxima Nova SCOSF Condensed Regular', sans-serif;
+    color: #1c1c1c;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    margin-top: -5px
+
+  }
+
+  h6{
+    color: #B65E38;
+  }
+  
+  .svg-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;      /* vertical centering if parent is tall enough */
+    width: 100%;
+    /* Optional: add min-height if you want vertical padding */
+  }
+
+  h5{
+    color:#B65E38
+
+  }
+  
+  

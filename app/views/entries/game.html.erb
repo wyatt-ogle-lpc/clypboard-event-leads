@@ -1,0 +1,412 @@
+<h2 style="text-align:center; font-size: 5em; margin-bottom: -50px;">Catch the Termite!</h2>
+
+<div class="svg-center"
+     style="background-image: url('<%= asset_path('background.png') %>');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 0;
+            box-shadow: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;">
+</div>
+
+<div class="game-container" style="
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(100vh - 150px); /* Adjust height to leave space for title and button */
+  margin: -30px auto 0 auto;
+  z-index: 1;">
+  <svg id="game-graph" width="820" height="530"></svg>
+</div>
+
+
+
+
+<div id="instructions-overlay" style="
+  display: flex;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  align-items: center; justify-content: center;
+  background: rgba(24, 22, 12, 0.88);
+  color: #fffbe9;
+  font-size: 1.3em;
+  text-align: center;
+  flex-direction: column;
+">
+  <div style="background:#1c1c1c; border-radius:20px; padding:2em 2.5em; box-shadow:0 8px 32px #0005;">
+    <h5 style="margin-bottom:0.5em;">How to Play</h5>
+    <p style="font-size:1.2em;">
+    <img src="<%= asset_path('termite.png') %>" style="height:1.2em;vertical-align:middle;"> 
+    Catch the termite before it reaches the house 
+    <img src="<%= asset_path('house.png') %>" style="height:1em;vertical-align:middle;">!<br>
+    Click a dot to move the 
+    LPC Mouse
+    <img src="<%= asset_path('mouse.png') %>" style="height:1em;vertical-align:middle;">
+    <br>
+    Plan your path and best the pest!
+  </p>
+    <h5 style="margin-top:1.5em; margin-bottom: 1.5em; font-weight:bold; font-size:1.5em; color:#B65E38; letter-spacing:1px;">
+      Click anywhere to continue
+    </h5>
+    <div id="skip-game-container" style="text-align:center; z-index: 1;">
+      <%= link_to "Skip Game", expo_thanks_path(@expo, skipped: true), class: "skip_game_btn" %>
+    </div>
+    
+  </div>
+</div>
+
+
+<div id="endgame-overlay" style="
+  display:none; 
+  position:fixed; left:0; top:0; width:100vw; height:100vh;
+  z-index:1100; 
+  align-items: center; justify-content: center; 
+">
+  <div style="
+    background: #1c1c1c;
+    color: #fffbe9;
+    border-radius: 24px;
+    min-width: 320px;
+    max-width: 92vw;
+    min-height: 120px;
+    box-shadow: 0 8px 32px #0003;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2em 2.5em;
+    font-size: 1.5em;
+    text-align: center;
+  ">
+    <div id="endgame-message"></div>
+  </div>
+</div>
+
+
+<%= stylesheet_link_tag 'game', media: 'all' %>
+
+<script>
+  const imagePaths = {
+    mouse: "<%= asset_path('mouse.png') %>",
+    termite: "<%= asset_path('termite.png') %>",
+    house: "<%= asset_path('house.png') %>"
+  };
+
+const nodes = [
+  { x: 400,  y: 75,   label: '0', connections: [1, 2] },    // House (top center)
+  { x: 144,  y: 165,  label: '1', connections: [0, 3, 4] }, // Left top
+  { x: 656,  y: 165,  label: '2', connections: [0, 3, 5] }, // Right top
+  { x: 400,  y: 225,  label: '3', connections: [1, 2, 4, 5, 7] }, // Center
+  { x: 176,  y: 390,  label: '4', connections: [1, 3, 7, 6] },    // Left bottom
+  { x: 624,  y: 390,  label: '5', connections: [2, 3, 7, 6] },    // Right bottom
+  { x: 400,  y: 480,  label: '6', connections: [4, 5, 7] },       // Bottom center
+  { x: 400,  y: 345,  label: '7', connections: [3, 4, 5, 6] }     // Center bottom
+];
+
+const HOUSE_NODE = 0;
+const MOUSE_START = 0;
+const TERMITE_START = 6;
+
+let mouseAt = MOUSE_START;
+let termiteAt = TERMITE_START;
+let gameOver = false;
+let gameWinner = null;
+let gameReady = false;
+let blinkTimeout = null;
+
+function drawGraph() {
+  const svg = document.getElementById('game-graph');
+  svg.innerHTML = '';
+
+  // Draw edges
+  nodes.forEach((node, i) => {
+    node.connections.forEach(j => {
+      if (j > i) return;
+      svg.innerHTML += `<line x1="${node.x}" y1="${node.y}" x2="${nodes[j].x}" y2="${nodes[j].y}" stroke="#813910" stroke-width="12" stroke-linecap="round" />`;
+    });
+  });
+
+  // Draw nodes (as circles)
+  nodes.forEach((node, i) => {
+    let fill = "#fff8b0";
+    let border = "#c7a73e";
+    if (i === HOUSE_NODE) {
+      fill = "#dde8ff";
+      border = "#496ec6";
+    }
+    svg.innerHTML += `
+      <g>
+        <circle cx="${node.x}" cy="${node.y}" r="24" fill="${fill}" stroke="${border}" stroke-width="4" data-node="${i}" />
+      </g>
+    `;
+  });
+
+  // Draw house image
+  const HOUSE_SIZE = 120;
+  const houseNode = nodes[HOUSE_NODE];
+  svg.innerHTML += `
+    <image 
+      x="${houseNode.x - HOUSE_SIZE/2}" 
+      y="${houseNode.y - HOUSE_SIZE/2}" 
+      width="${HOUSE_SIZE}" height="${HOUSE_SIZE}"
+      href="${imagePaths.house}"
+      style="pointer-events: none;"
+    />
+  `;
+
+  // Draw termite image
+  const TERMITE_SIZE = 120;
+  const termiteNode = nodes[termiteAt];
+  svg.innerHTML += `
+    <image 
+      id="termite-img"
+      x="${termiteNode.x - TERMITE_SIZE/2}" 
+      y="${termiteNode.y - TERMITE_SIZE/2}" 
+      width="${TERMITE_SIZE}" height="${TERMITE_SIZE}"
+      href="${imagePaths.termite}" 
+      style="pointer-events: none;"
+    />
+  `;
+
+  // Draw mouse image
+  const MOUSE_SIZE = 160;
+  const mouseNode = nodes[mouseAt];
+  let mouseId = (mouseAt === HOUSE_NODE && !(gameOver && gameWinner === "termite" && termiteAt === HOUSE_NODE)) ? 'blinking-mouse' : 'mouse-img';
+  svg.innerHTML += `
+    <image 
+      id="${mouseId}"
+      x="${mouseNode.x - MOUSE_SIZE/2}" 
+      y="${mouseNode.y - MOUSE_SIZE/2}" 
+      width="${MOUSE_SIZE}" height="${MOUSE_SIZE}"
+      href="${imagePaths.mouse}" 
+      style="pointer-events: none;"
+    />
+  `;
+}
+
+// BLINKING
+function startMouseBlink() {
+  stopMouseBlink(); // In case it's already running
+  blinkOn();
+}
+function blinkOn() {
+  const mouseImg = document.getElementById('blinking-mouse');
+  if (mouseImg) mouseImg.style.opacity = "1";
+  blinkTimeout = setTimeout(blinkOff, 500);
+}
+function blinkOff() {
+  const mouseImg = document.getElementById('blinking-mouse');
+  if (mouseImg) mouseImg.style.opacity = "0";
+  blinkTimeout = setTimeout(blinkOn, 150);
+}
+function stopMouseBlink() {
+  if (blinkTimeout) {
+    clearTimeout(blinkTimeout);
+    blinkTimeout = null;
+  }
+  const mouseImg = document.getElementById('blinking-mouse');
+  if (mouseImg) mouseImg.style.opacity = "1";
+}
+
+// ANIMATION: Animate from one node to another
+function animateMove(fromIdx, toIdx, imageId, size, callback) {
+  const from = nodes[fromIdx];
+  const to = nodes[toIdx];
+  const img = document.getElementById(imageId);
+  if (!img) {
+    if (callback) callback();
+    return;
+  }
+  const startTime = performance.now();
+  function animateFrame(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / 250, 1);
+    const x = from.x + (to.x - from.x) * t;
+    const y = from.y + (to.y - from.y) * t;
+    img.setAttribute('x', x - size/2);
+    img.setAttribute('y', y - size/2);
+    if (t < 1) {
+      requestAnimationFrame(animateFrame);
+    } else if (callback) {
+      callback();
+    }
+  }
+  requestAnimationFrame(animateFrame);
+}
+
+function getNeighbors(idx) {
+  return nodes[idx].connections;
+}
+
+function termiteMove() {
+  if (getNeighbors(termiteAt).includes(HOUSE_NODE)) return HOUSE_NODE;
+  let options = getNeighbors(termiteAt).filter(opt => opt !== mouseAt);
+  let safeOptions = options.filter(opt => !getNeighbors(opt).includes(mouseAt) && opt !== mouseAt);
+  let candidates = safeOptions.length > 0 ? safeOptions : options;
+  let best = candidates[0], minDist = 999;
+  candidates.forEach(opt => {
+    const dist = shortestPathLength(opt, HOUSE_NODE);
+    if (dist < minDist) { best = opt; minDist = dist; }
+  });
+  return best !== undefined ? best : termiteAt;
+}
+
+function shortestPathLength(start, goal) {
+  if (start === goal) return 0;
+  let visited = new Set();
+  let queue = [[start, 0]];
+  while (queue.length > 0) {
+    let [current, dist] = queue.shift();
+    if (current === goal) return dist;
+    visited.add(current);
+    getNeighbors(current).forEach(nbr => {
+      if (!visited.has(nbr)) queue.push([nbr, dist + 1]);
+    });
+  }
+  return 99;
+}
+
+function checkGame() {
+  console.log("checkGame called: mouseAt", mouseAt, "termiteAt", termiteAt);
+  if (mouseAt === termiteAt) {
+    endGame(true);
+  } else if (termiteAt === HOUSE_NODE) {
+    endGame(false);
+  }
+}
+
+function endGame(win) {
+  console.log("endGame triggered", win);
+  gameOver = true;
+  gameWinner = win ? "mouse" : "termite";
+  
+  const skipBtn = document.getElementById('skip-game-container');
+if (skipBtn) skipBtn.style.display = 'none';
+
+  drawGraph();
+  const overlay = document.getElementById('endgame-overlay');
+  const msg = document.getElementById('endgame-message');
+  if (win) {
+    msg.innerHTML = `
+      <h1 style="font-size:3em; color:#B65E38; margin:40px 0;">
+      <img src="<%= asset_path('mouse.png') %>" style="height:1em;vertical-align:right;">
+      You caught the termite! 🎉
+      </h1>`;
+} else {
+    msg.innerHTML = `
+      <h1 style="font-size:3em; color:#B65E38; margin:40px 0;">
+      <img src="<%= asset_path('termite.png') %>" style="height:1em;vertical-align:right;"> 
+      The termite reached the house! 😱
+      </h1>`;
+}
+  overlay.style.display = "flex";
+
+  if (
+    mouseAt === HOUSE_NODE &&
+    !(gameOver && gameWinner === "termite" && termiteAt === HOUSE_NODE)
+  ) {
+    startMouseBlink();
+  } else {
+    stopMouseBlink();
+  }
+  setTimeout(function() {
+    window.location.href = "<%= expo_thanks_path(@expo) %>";
+  }, 2500);
+}
+
+// --- MAIN ---
+document.addEventListener("DOMContentLoaded", function() {
+  // Show instructions overlay
+  const overlay = document.getElementById('instructions-overlay');
+  overlay.style.display = "flex";
+  overlay.addEventListener("click", function() {
+    overlay.style.display = "none";
+    gameReady = true;
+  });
+
+  drawGraph();
+
+  if (
+    mouseAt === HOUSE_NODE &&
+    !(gameOver && gameWinner === "termite" && termiteAt === HOUSE_NODE)
+  ) {
+    startMouseBlink();
+  } else {
+    stopMouseBlink();
+  }
+
+  document.getElementById('game-graph').addEventListener('click', function(e) {
+    if (gameOver) return;
+    if (!gameReady) return;
+
+    let target = e.target;
+    while (target && !target.getAttribute('data-node')) {
+      target = target.parentNode;
+      if (!target || target === this) return;
+    }
+    const nodeIdx = target.getAttribute('data-node');
+    if (nodeIdx === null) return;
+    const idx = parseInt(nodeIdx, 10);
+
+    // If player clicks on their own node or the house, do nothing
+    if (!getNeighbors(mouseAt).includes(idx) || idx === mouseAt || idx === HOUSE_NODE) return;
+
+    // Special case: Player clicks the termite's node (catch termite, win instantly)
+    if (idx === termiteAt) {
+      const oldMouse = mouseAt;
+      mouseAt = idx;
+      drawGraph();
+      animateMove(
+        oldMouse,
+        mouseAt,
+        (mouseAt === HOUSE_NODE && !(gameOver && gameWinner === "termite" && termiteAt === HOUSE_NODE)) ? 'blinking-mouse' : 'mouse-img',
+        160,
+        function() {
+          console.log("After animation, mouseAt:", mouseAt, "termiteAt:", termiteAt);
+          checkGame();
+        }
+      );
+      return;
+    }
+
+    // Normal move (not landing on termite)
+    const oldMouse = mouseAt, oldTermite = termiteAt;
+    mouseAt = idx;
+    drawGraph();
+    animateMove(
+      oldMouse,
+      mouseAt,
+      (mouseAt === HOUSE_NODE && !(gameOver && gameWinner === "termite" && termiteAt === HOUSE_NODE)) ? 'blinking-mouse' : 'mouse-img',
+      160,
+      function() {
+        setTimeout(function() {
+          let tmove = termiteMove();
+          const termiteOld = termiteAt;
+          termiteAt = tmove;
+          drawGraph();
+          animateMove(termiteOld, termiteAt, 'termite-img', 120, function() {
+            if (
+              mouseAt === HOUSE_NODE &&
+              !(gameOver && gameWinner === "termite" && termiteAt === HOUSE_NODE)
+            ) {
+              startMouseBlink();
+            } else {
+              stopMouseBlink();
+            }
+            checkGame();
+          });
+        }, 100);
+      }
+    );
+  });
+});
+</script>
