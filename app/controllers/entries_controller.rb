@@ -37,7 +37,7 @@ class EntriesController < ApplicationController
     end
 
         if @entry.save
-          #submit_lead_to_clypboard(@entry)
+          submit_lead_to_clypboard(@entry)
           if @expo.present?
             redirect_to expo_game_path(expo: @expo)
           else
