@@ -1,0 +1,35 @@
+Clypboard Event Leads Web Application - by Wyatt Ogle for Lloyd Pest Control
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+This Web Application was designed for Lloyd Pest Control to be able to easily create leads at expos or trade shows. 
+
+Before this app, they had customers and companies write down their information manually on a piece of paper then somebody would enter it into their system.
+This app is designed to not only make it must simpler and easier for customers to enter their info and for it to directly translate as a lead to the LPC Clypboard system, but also to attract more customers at these shows
+
+The app uses 3 API keys (all encrypted in the files)
+1 The Clypboard API that allows the app to input information in the form of leads directly to clypboard
+2 The Zerobounce API that verifies any emails inputted to ensure they are legitimate emails
+3 The Google Maps API that allows for address verification and easy searching
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+The App works like this:
+
+The company using the app (presumably LPC) looks up the URL - eventleads.lloydpest.com - and may enter the path: /entries/*expo*
+If the user decides to enter a value for *expo*, in each description of the leads submitted, it will include that expo in the name however, it is not necessary for functionality
+
+The customer enters their information being required to enter Name, Address, Email, and Phone with the other fields optional (Company, Property Name, Comments, Select Issues (check boxes with types of bug problems))
+The Email is verified before being submitted and the Address comes with a drop down, ensuring that the entry is valid.
+
+They click Submit and are redirected to a game page where they are told the instructions to a short game
+On this page, they are given the option to "skip game" or "click anywhere to continue"
+
+If they continue, they partake in a short interactive and aesthetically pleasing puzzle game and upon winning or losing, are redirected to the "thanks" page
+
+If the customer decided to play the game, the page says "Thanks for playing", "We'll be in touch." and has a button for a new entry
+If the customer decided to skip the game, the page just says "Thanks", "We'll be in touch." and once again, has a button for a new entry
+
+When this button is clicked, it redirects back to the landing page where a new consumer may enter their information
+
+This entire time, the URL maintains the *expo* name, allowing for every entry at a given event to be labelled under that expo
