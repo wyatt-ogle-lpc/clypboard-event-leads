@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_28_195852) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_30_180007) do
   create_table "companies", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -34,5 +34,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_28_195852) do
     t.boolean "bedbugs"
     t.boolean "other"
     t.string "expo"
+    t.string "ai_description"
+    t.string "city"
   end
 end

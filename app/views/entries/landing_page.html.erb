@@ -18,7 +18,7 @@
     <%= form_with model: @entry, url: @expo.present? ? expo_entries_path(@expo) : entries_path, data: { turbo: false }, local: true do |form| %>
     <div class="form-row">
       <div class="form-field">
-        <%= form.label :name, "Name" %>
+        <%= form.label :name, ("Name <span style='color: #d03e3e;'>*</span>").html_safe %>
         <%= form.text_field :name, required: true, placeholder: "John Smith" %>
         <% if @entry.errors[:name].any? %>
           <p class="error"><%= @entry.errors[:name].join(", ") %></p>
@@ -42,7 +42,7 @@
         <% end %>
       </div>
       <div class="form-field">
-        <%= form.label :address, "Property Address" %>
+        <%= form.label :address, ("Property Address <span style='color: #d03e3e;'>*</span>").html_safe %>
         <%= form.text_field :address, required: true, placeholder: "1234 Friars Way", id: "entry_address" %>
         <% if @entry.errors[:address].any? %>
           <p class="error"><%= @entry.errors[:address].join(", ") %></p>
@@ -52,14 +52,14 @@
 
     <div class="form-row">
       <div class="form-field">
-        <%= form.label :email, "Email" %>
+        <%= form.label :email, ("Email <span style='color: #d03e3e;'>*</span>").html_safe %>
         <%= form.email_field :email, required: true, placeholder: "you@email.com" %>
         <% if @entry.errors[:email].any? %>
           <p class="error"><%= @entry.errors[:email].join(", ") %></p>
         <% end %>
       </div>
       <div class="form-field">
-        <%= form.label :phone_number, "Phone Number" %>
+        <%= form.label :phone_number, ("Phone Number <span style='color: #d03e3e;'>*</span>").html_safe %>
         <%= form.telephone_field :phone_number, required: true, placeholder: "(123) 456-7890", id: "phone_number" %>
         <% if @entry.errors[:phone_number].any? %>
           <p class="error"><%= @entry.errors[:phone_number].join(", ") %></p>

@@ -3,14 +3,19 @@ require 'uri'
 require 'json'
 
 class EntriesController < ApplicationController
-    def landing_page
-      @expo = params[:expo] || params.dig(:entry, :expo)
-      # You can pass @expo to the view, and pre-fill it or hide it in a hidden field
-      @entry = Entry.new(expo: @expo)    end
+
+
   
-      def game
-        @skipped = false
-      end
+
+
+  def landing_page
+    @expo = params[:expo] || params.dig(:entry, :expo)
+    # You can pass @expo to the view, and pre-fill it or hide it in a hidden field
+    @entry = Entry.new(expo: @expo)    end
+
+    def game
+      @skipped = false
+  end
 
   def create
     @expo = params[:expo] || params.dig(:entry, :expo)
@@ -26,6 +31,7 @@ class EntriesController < ApplicationController
 
       # Address validation using Google Geocoding API
     geocode_result = geocode_address(@entry.address)
+    @entry.city = extract_city_from_geocode_result(geocode_result)
     if geocode_result["status"] == "OK"
       location = geocode_result["results"][0]["geometry"]["location"]
       @entry.latitude = location["lat"]
@@ -37,7 +43,7 @@ class EntriesController < ApplicationController
     end
 
         if @entry.save
-          submit_lead_to_clypboard(@entry)
+          ClypboardLeadJob.perform_later(@entry.id)
           if @expo.present?
             redirect_to expo_game_path(expo: @expo)
           else
@@ -53,11 +59,7 @@ class EntriesController < ApplicationController
     @expo = params[:expo]
     # Set up any game variables here, or just render the game view
   end
-  
 
-    def submit_lead_to_clypboard(entry)
-      ClypboardLeadPoster.create_lead(entry)
-    end
   
     def thanks
     end
@@ -99,6 +101,14 @@ class EntriesController < ApplicationController
     rescue => e
       Rails.logger.error "ZeroBounce error: #{e.message}"
       "unknown"
+    end
+
+    def extract_city_from_geocode_result(geocode_result)
+      # Assume geocode_result is a parsed JSON Hash from Google Geocoding API
+      components = geocode_result.dig("results", 0, "address_components")
+      city = components.find { |comp| comp["types"].include?("locality") }
+      city_name = city ? city["long_name"] : nil
+      city_name
     end
     
   end
