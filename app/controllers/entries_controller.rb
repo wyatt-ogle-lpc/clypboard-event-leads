@@ -18,6 +18,8 @@ class EntriesController < ApplicationController
   end
 
   def create
+    Rails.logger.info "[DEBUG] EntriesController#create called with params: #{params.inspect}"
+
     @expo = params[:expo] || params.dig(:entry, :expo)
     @entry = Entry.new(entry_params.merge(expo: @expo))
 
