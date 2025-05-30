@@ -57,6 +57,8 @@ class ClypboardLeadPoster
       Other: #{entry.other ? 'Yes' : 'No'}
 
       Expo: #{entry.expo.to_s.gsub(/[-_%20]/, ' ').squeeze(' ').strip.split.map(&:capitalize).join(' ')}
+
+      AI Desc: 
     DESC
   end
 end

@@ -58,8 +58,12 @@
       Click anywhere to continue
     </h5>
     <div id="skip-game-container" style="text-align:center; z-index: 1;">
-      <%= link_to "Skip Game", expo_thanks_path(@expo, skipped: true), class: "skip_game_btn" %>
-    </div>
+  <% if @expo.present? %>
+    <%= link_to "Skip Game", expo_thanks_path(@expo, skipped: true), class: "skip_game_btn" %>
+  <% else %>
+    <%= link_to "Skip Game", thanks_path, class: "skip_game_btn" %>
+  <% end %>
+</div>
     
   </div>
 </div>
@@ -319,7 +323,7 @@ if (skipBtn) skipBtn.style.display = 'none';
     stopMouseBlink();
   }
   setTimeout(function() {
-    window.location.href = "<%= expo_thanks_path(@expo) %>";
+    window.location.href = "<%= @expo.present? ? expo_thanks_path(@expo) : thanks_path %>";
   }, 2500);
 }
 
