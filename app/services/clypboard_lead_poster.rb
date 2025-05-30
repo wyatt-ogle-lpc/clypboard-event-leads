@@ -160,28 +160,29 @@ class ClypboardLeadPoster
     end
 
     <<~DESC
-      Created at: #{Time.now.strftime("%B %d, %Y at %I:%M %p %Z")}
+      <strong>Created at:</strong> #{Time.now.strftime("%B %d, %Y at %I:%M %p %Z")}<br>
 
-      Name: #{entry.name}
-      Company: #{entry.company_name}
-      Property: #{entry.property_name}
-      Address: #{entry.address}
-      Email: #{entry.email}
-      Phone: #{entry.phone_number}
-      Comments: #{entry.comments}
+      <strong>Name:</strong> #{entry.name}<br>
+      <strong>Company:</strong> #{entry.company_name}<br>
+      <strong>Property:</strong> #{entry.property_name}<br>
+      <strong>Address:</strong> #{entry.address}<br>
+      <strong>Email:</strong> #{entry.email}<br>
+      <strong>Phone:</strong> #{entry.phone_number}<br>
+      <strong>Comments:</strong> #{entry.comments}<br>
 
-      General Pest: #{entry.general_pest ? 'Yes' : 'No'}
-      Termites: #{entry.termites ? 'Yes' : 'No'}
-      Rodents: #{entry.rodents ? 'Yes' : 'No'}
-      Bedbugs: #{entry.bedbugs ? 'Yes' : 'No'}
-      Other: #{entry.other ? 'Yes' : 'No'}
+      <strong>General Pest:</strong> #{entry.general_pest ? 'Yes' : 'No'}<br>
+      <strong>Termites:</strong> #{entry.termites ? 'Yes' : 'No'}<br>
+      <strong>Rodents:</strong> #{entry.rodents ? 'Yes' : 'No'}<br>
+      <strong>Bedbugs:</strong> #{entry.bedbugs ? 'Yes' : 'No'}<br>
+      <strong>Other:</strong> #{entry.other ? 'Yes' : 'No'}<br>
 
-      Expo: #{entry.expo.to_s.gsub(/[-_%20]/, ' ').squeeze(' ').strip.split.map(&:capitalize).join(' ')}
+      <strong>Expo:</strong> #{entry.expo.to_s.gsub(/[-_%20]/, ' ').squeeze(' ').strip.split.map(&:capitalize).join(' ')}<br>
 
-      AI Desc:
-      #{ai_desc}
+      <strong>AI Desc:</strong><br>
+      #{ai_desc}<br>
 
-      Long: #{entry.longitude}, Lat: #{entry.latitude}
+      <strong>Long:</strong> #{entry.longitude}, <strong>Lat:</strong> #{entry.latitude}
     DESC
+
   end
 end
