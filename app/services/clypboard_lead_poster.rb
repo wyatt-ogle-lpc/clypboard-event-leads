@@ -52,7 +52,7 @@ class ClypboardLeadPoster
     extract_info = ->(body) {
     results = JSON.parse(body)
     # --- Extract website if present ---
-    website = results.dig("knowledge_graph", "website")
+    website = results.dig("organic_results", 0, "link") || results.dig("knowledge_graph", "website")
 
     #makes it so if the address returns nil, it doesn't apply .compact on a nil
     snippets = (results["organic_results"] || []).first(2).map { |r| r["snippet"] }.compact
@@ -160,6 +160,8 @@ class ClypboardLeadPoster
     end
 
     <<~DESC
+      Created at: #{Time.now.strftime("%B %d, %Y at %I:%M %p %Z")}
+
       Name: #{entry.name}
       Company: #{entry.company_name}
       Property: #{entry.property_name}
