@@ -44,6 +44,8 @@ class EntriesController < ApplicationController
 
         if @entry.save
           ClypboardLeadJob.perform_later(@entry.id)
+          Rails.logger.info "ENQUEUED ClypboardLeadJob for Entry ID: #{@entry.id}"
+
           if @expo.present?
             redirect_to expo_game_path(expo: @expo)
           else
