@@ -180,6 +180,8 @@ class ClypboardLeadPoster
 
       AI Desc:
       #{ai_desc}
+
+      Long: #{entry.longitude}, Lat: #{entry.latitude}
     DESC
   end
 end
