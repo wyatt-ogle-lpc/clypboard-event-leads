@@ -3,6 +3,7 @@ require 'uri'
 require 'json'
 
 class EntriesController < ApplicationController
+  skip_before_action :verify_authenticity_token
 
 
   
