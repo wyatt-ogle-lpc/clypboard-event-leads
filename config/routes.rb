@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   post 'entries/:expo', to: 'entries#create'
   get 'entries/:expo/thanks', to: 'entries#thanks', as: :expo_thanks
   get 'entries/:expo/game', to: 'entries#game', as: :expo_game
+  get 'entries/:expo/raffle', to: 'raffle#raffle', as: :expo_raffle
 
 
 end

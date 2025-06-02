@@ -176,7 +176,7 @@ class ClypboardLeadPoster
       <strong>Bedbugs:</strong> #{entry.bedbugs ? 'Yes' : 'No'}<br>
       <strong>Other:</strong> #{entry.other ? 'Yes' : 'No'}<br>
 
-      <strong>Expo:</strong> #{entry.expo.to_s.gsub(/[-_%20]/, ' ').squeeze(' ').strip.split.map(&:capitalize).join(' ')}<br>
+      <strong>Expo:</strong> #{entry.expo}<br>
 
       <strong>AI Desc:</strong><br>
       #{ai_desc}<br>

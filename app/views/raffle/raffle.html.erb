@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Raffle Winner</title>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
+  <script>
+    function revealWinner() {
+      document.getElementById("winner-container").style.display = "block";
+      document.getElementById("reveal-button").style.display = "none";
+    }
+  </script>
+</head>
+<body>
+  <div style="text-align:center;">
+    <%= image_tag "mouse.png", alt: "Logo", class: "mouseLogo" %>
+  </div>
+
+  <div style="max-width: 500px; margin: 100px auto 0 auto; text-align: center;">
+  <h2>Expo: <%= @expo.titleize %></h2>
+
+  <% if @winner.present? %>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+    <button id="reveal-button" onclick="revealWinner()" class="btn" style="padding: 10px 20px; width: auto; white-space: nowrap; text-align: center;">View Raffle Winner</button>      
+    </div>
+
+    <div id="winner-container" style="display: none; margin-top: 20px;">
+      <h3>🎉 Winner 🎉</h3>
+      <h2 style="margin-bottom: -4px; margin-top: -5px; font-size: 2em;"><strong><%= @winner.name%></strong></h2>
+      <% if @winner.company_name.present? %>
+        <p><%= @winner.company_name %></p>
+      <% end %>
+      <% if @winner.email.present? %>
+        <p>Email: <%= @winner.email%><br>Phone: <%= @winner.phone_number%></p>
+      <% end %>
+    </div>
+  <% else %>
+    <p>No eligible entries for this expo.</p>
+  <% end %>
+  <!-- 🔽 Move this below the winner content -->
+  <div style="margin-top: 40px;">
+    <%= link_to "Back to Home", expo_entries_path(@expo), class: "btn", style: "margin-top: -10px;" %>
+    
+
+  </div>
+</div>
+</body>
+</html>

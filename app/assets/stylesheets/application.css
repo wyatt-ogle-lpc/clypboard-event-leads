@@ -153,16 +153,14 @@ body {
     margin-bottom: 45px;
   }
   
-  label, .boxlabel {
+  label{
     display: block;
     margin-bottom: 2px;
     color: #1c1c1c;
     font-size: 1.1em;
   }
 
-  .boxlabel {
-    margin-top: 15px;
-  }
+
   
   input[type="text"], input[type="email"], input[type="url"], input[type="tel"] {
     font-family: 'Proxima Nova Condensed Regular', sans-serif;

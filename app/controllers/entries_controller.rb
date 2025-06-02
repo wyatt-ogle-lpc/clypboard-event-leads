@@ -3,10 +3,6 @@ require 'uri'
 require 'json'
 
 class EntriesController < ApplicationController
-  skip_before_action :verify_authenticity_token
-
-
-  
 
 
   def landing_page
@@ -21,7 +17,14 @@ class EntriesController < ApplicationController
   def create
     Rails.logger.info "[DEBUG] EntriesController#create called with params: #{params.inspect}"
 
-    @expo = params[:expo] || params.dig(:entry, :expo)
+    @expo = (params[:expo] || params.dig(:entry, :expo))
+            .to_s
+            .gsub(/[-_%20]/, ' ')
+            .squeeze(' ')
+            .strip
+            .split
+            .map(&:capitalize)
+            .join(' ')
     @entry = Entry.new(entry_params.merge(expo: @expo))
 
       # Validate email with ZeroBounce before saving
@@ -61,7 +64,14 @@ class EntriesController < ApplicationController
   end
 
   def game
-    @expo = params[:expo]
+    @expo = (params[:expo])
+              .to_s
+              .gsub(/[-_%20]/, ' ')
+              .squeeze(' ')
+              .strip
+              .split
+              .map(&:capitalize)
+              .join(' ')
     # Set up any game variables here, or just render the game view
   end
 
