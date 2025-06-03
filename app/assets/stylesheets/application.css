@@ -150,12 +150,12 @@ body {
 
   }
 
-  h7{
+  .raffle-heading{
     font-family: 'Rocko Ultra FLF Bold', sans-serif;
     color: #1c1c1c;
     font-size: 3.5em;
     margin-bottom: 20px;
-    margin-top: 20px;
+    margin-top: 60px;
   }
 
 
