@@ -7,17 +7,17 @@ class RaffleController < ApplicationController
 
         time_limit = 24.hours.ago
 
-        entries = Entry.where(expo: @expo, raffled: [false, nil])
+        @entries = Entry.where(expo: @expo, raffled: [false, nil])
                     .where("created_at >= ?", time_limit)
 
         #only wants entries from the last 24 hours to eliminate invalid entries
         
-        entries.each_with_index do |entry, i|
+        @entries.each_with_index do |entry, i|
             Rails.logger.debug "[DEBUG] Elligible Entry ##{i + 1}: #{entry.attributes.inspect}"
         end
           
         
-        @winner = entries.order("RANDOM()").first
+        @winner = @entries.order("RANDOM()").first
 
         if @winner
             Rails.logger.debug "[DEBUG] Winner is: #{@winner.name} email: #{@winner.email}"

@@ -50,6 +50,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Rocko Ultra FLF Bold';
+  src: url('/fonts/ROCKOULTRAFLF-BOLD.TTF') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 
 body {
     font-family: 'Proxima Nova Condensed Regular', sans-serif;
@@ -141,6 +148,14 @@ body {
     margin-bottom: 25px;
     margin-top: -20px
 
+  }
+
+  h7{
+    font-family: 'Rocko Ultra FLF Bold', sans-serif;
+    color: #1c1c1c;
+    font-size: 3.5em;
+    margin-bottom: 20px;
+    margin-top: 20px;
   }
 
 

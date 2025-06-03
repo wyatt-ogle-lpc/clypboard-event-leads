@@ -8,40 +8,213 @@
       document.getElementById("winner-container").style.display = "block";
       document.getElementById("reveal-button").style.display = "none";
     }
+
+    function closeWinnerOverlay() {
+      document.getElementById("winner-overlay").style.display = "none";
+    }
+
   </script>
 </head>
 <body>
-  <div style="text-align:center;">
-    <%= image_tag "mouse.png", alt: "Logo", class: "mouseLogo" %>
+<div style="text-align: center; margin-bottom: -20px;">
+  <div>
+    <%= image_tag "mouse.png", alt: "Logo", class: "mouseLogo", style: "max-width: 150px; margin-top: 20px;" %>
   </div>
+  <div style="margin-top: 40px;">
+    <h7 style="font-size: 2.5em;">
+      <%= @expo %> Raffle
+    </h7>
+  </div>
+</div>
+  
 
-  <div style="max-width: 500px; margin: 100px auto 0 auto; text-align: center;">
-  <h2>Expo: <%= @expo.titleize %></h2>
+  <div style="max-width: 600px; margin: 40px auto;">
 
-  <% if @winner.present? %>
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-    <button id="reveal-button" onclick="revealWinner()" class="btn" style="padding: 10px 20px; width: auto; white-space: nowrap; text-align: center;">View Raffle Winner</button>      
+  <% if @winner.present? && @entries.any? %>
+    <div id="wheel-section" style="text-align:center;">
+      <canvas id="wheel-canvas" width="400" height="400"></canvas>
+      <br>
+      <button id="spin-btn" class="btn" style="padding: 10px 20px; width: auto; white-space: nowrap; text-align: center;">Spin to Reveal Winner</button>
+      <div id="winner-container" style="display:none; margin-top:30px;">
+        <h3>🎉 Winner 🎉</h3>
+        <h2 style="font-size:2em;"><strong><%= @winner.name %></strong></h2>
+        <% if @winner.company_name.present? %>
+          <p><%= @winner.company_name %></p>
+        <% end %>
+        <% if @winner.email.present? %>
+          <p>Email: <%= @winner.email%><br>Phone: <%= @winner.phone_number%></p>
+        <% end %>
+      </div>
     </div>
+    <script>
+      // Pass Ruby data to JS
+      const entries = <%= raw @entries.map(&:name).to_json %>;
+      const winner = <%= raw @winner.name.to_json %>;
+    </script>
+    <script>
+      // --- WHEEL CODE ---
+      const canvas = document.getElementById('wheel-canvas');
+      const ctx = canvas.getContext('2d');
+      const spinBtn = document.getElementById('spin-btn');
+      const winnerContainer = document.getElementById('winner-container');
+      const segmentCount = entries.length;
+      const center = 200;
+      const radius = 180;
+      const arc = 2 * Math.PI / segmentCount;
 
-    <div id="winner-container" style="display: none; margin-top: 20px;">
-      <h3>🎉 Winner 🎉</h3>
-      <h2 style="margin-bottom: -4px; margin-top: -5px; font-size: 2em;"><strong><%= @winner.name%></strong></h2>
-      <% if @winner.company_name.present? %>
-        <p><%= @winner.company_name %></p>
-      <% end %>
-      <% if @winner.email.present? %>
-        <p>Email: <%= @winner.email%><br>Phone: <%= @winner.phone_number%></p>
-      <% end %>
-    </div>
+      function drawWheel(rotation = 0) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+          // Draw Wheel Segments
+          for (let i = 0; i < segmentCount; i++) {
+            const angle = i * arc + rotation;
+            ctx.beginPath();
+            ctx.moveTo(center, center);
+            ctx.arc(center, center, radius, angle, angle + arc);
+            ctx.fillStyle = i % 3 === 0 ? "#B65E24" : (i % 3 === 1 ? "#F7E7C3" : "#D99B4D");
+            ctx.fill();
+          }
+
+          // Draw Dividing Lines
+          for (let i = 0; i < segmentCount; i++) {
+            const angle = i * arc + rotation;
+            ctx.beginPath();
+            ctx.moveTo(center, center);
+            ctx.lineTo(center + radius * Math.cos(angle), center + radius * Math.sin(angle));
+            ctx.strokeStyle = "#191919"; // or any light contrasting color
+            ctx.lineWidth = 3;           // adjust for thinner or thicker lines
+            ctx.stroke();
+          }
+            // Draw outer circle
+            ctx.beginPath();
+            ctx.arc(center, center, radius, 0, 2 * Math.PI);
+            ctx.strokeStyle = "#191919"; // or "#1c1c1c" or any color you like
+            ctx.lineWidth = 3;           // thicker for outer outline
+            ctx.stroke();
+            
+            // Draw inner circle (if intended)
+            ctx.beginPath();
+            ctx.arc(center, center, radius * 0.02, 0, 2 * Math.PI);
+            ctx.fillStyle = "#191919"; // Set the fill color for the inner circle
+            ctx.fill(); 
+            ctx.strokeStyle = "#191919"; // or another color for the inner circle
+            ctx.lineWidth = 2;   
+            ctx.stroke();
+
+            // Draw labels
+            for (let i = 0; i < segmentCount; i++) {
+              const angle = i * arc + rotation + arc / 2;
+              ctx.save();
+              ctx.translate(center, center);
+              ctx.rotate(angle);
+              ctx.textAlign = "right";
+              ctx.font = "1.5em Bebas Neue Bold";
+              ctx.fillStyle = "#191919";
+              ctx.fillText(entries[i], radius - 18, 5);
+              ctx.restore();
+            }
+
+            // Draw pointer
+            ctx.beginPath();
+            ctx.moveTo(center, 35);
+            ctx.lineTo(center - 16, 5);
+            ctx.lineTo(center + 16, 5);
+            ctx.closePath();
+            ctx.fillStyle = "#000000";
+            ctx.fill();
+          }
+          if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(function () {
+              drawWheel();
+            });
+          } else {
+            setTimeout(drawWheel, 500);
+          }    
+      drawWheel();
+
+      // Find the winning segment index
+      const winnerIndex = entries.indexOf(winner);
+
+      // Animate Spin
+      spinBtn.onclick = () => {
+        spinBtn.disabled = true;
+        let rotations = 8; // Spins before stopping
+        let finalAngle = 1.5 * Math.PI - (winnerIndex * arc) - arc / 2;
+        let duration = 4000; // ms
+        let start = null;
+        let currentRotation = 0;
+
+        function animateSpin(ts) {
+          if (!start) start = ts;
+          let elapsed = ts - start;
+          let t = Math.min(elapsed / duration, 1);
+          // Ease out cubic
+          let ease = 1 - Math.pow(1 - t, 3);
+          currentRotation = 2 * Math.PI * rotations * (1 - ease) + finalAngle * ease;
+          drawWheel(currentRotation);
+
+          if (t < 1) {
+            requestAnimationFrame(animateSpin);
+          } else {
+            setTimeout(() => {
+              document.getElementById("winner-overlay").style.display = "flex";
+            }, 800);
+          }
+        }
+        requestAnimationFrame(animateSpin);
+      };
+    </script>
   <% else %>
     <p>No eligible entries for this expo.</p>
   <% end %>
-  <!-- 🔽 Move this below the winner content -->
-  <div style="margin-top: 40px;">
-    <%= link_to "Back to Home", expo_entries_path(@expo), class: "btn", style: "margin-top: -10px;" %>
-    
+</div>
 
+  <!-- 🔽 Move this below the winner content -->
+  <div style="text-align: center;">
+    <%= link_to "Home", expo_entries_path(@expo), class: "btn", style: "margin-top: -30px; display: inline-block; padding: 8px 0px;" %>
+  </div> 
+</div>
+
+<div id="winner-overlay" style="
+  display: none;
+  position: fixed;
+  left: 0; top: 0; width: 100vw; height: 100vh;
+  z-index: 1200;
+  align-items: center; justify-content: center;
+  background: rgba(24, 22, 12, 0.86);
+  color: #fffbe9;
+  text-align: center;
+  font-size: 2em;
+  size: 0.8em;
+">
+  <div style="
+    background: #1c1c1c;
+    color: #fffbe9;
+    border-radius: 28px;
+    max-width: 400px;
+    max-height: 450px;
+    box-shadow: 0 8px 32px #0005;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5em 2.8em;
+    font-size: 1.5em;
+  ">
+    <h1 style="font-size: 1.5em; margin: 0 0 0.4em 0; color: #ffc653; letter-spacing: 1px;">🎉 Winner 🎉</h1>
+    <h2 style="font-size: 1.5em; margin: 0 0 0.4em 0; color: #fffbe9;">
+      <strong><%= @winner.name %></strong>
+    </h2>
+    <% if @winner.company_name.present? %>
+      <p style="font-size: 0.7em; margin: 0 0 1em 0;"><%= @winner.company_name %></p>
+    <% end %>
+    <% if @winner.email.present? %>
+      <p style="font-size: 0.5em; margin: 0 0 0.15em 0;">Email: <%= @winner.email %></p>
+      <p style="font-size: 0.5em;">Phone: <%= @winner.phone_number %></p>
+    <% end %>
+    <button onclick="closeWinnerOverlay()" class="btn" style="margin-top:1.4em; font-size: 0.5em;">Close</button>
   </div>
 </div>
+
+
 </body>
 </html>
