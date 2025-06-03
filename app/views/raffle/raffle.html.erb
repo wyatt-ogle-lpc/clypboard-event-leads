@@ -26,7 +26,9 @@
     </div>
   </div>
 </div>
-  
+ 
+<% if @entries.present? && @entries.any? && @winner.present? %>
+
 
   <div style="max-width: 600px; margin: 40px auto;">
 
@@ -215,6 +217,31 @@
   </div>
 </div>
 
+<% else %>
+<div style="
+margin: 80px auto 40px auto;
+max-width: 400px;
+padding: 2em 1.5em;
+border-radius: 20px;
+text-align: center;
+">
+<h2 style="
+  font-size: 2.3em;
+  margin-bottom: 0.4em;
+  font-family: 'Bebas Neue Bold', sans-serif;
+  letter-spacing: 1px;
+">
+  Sorry, no entries for <%= @expo %>!
+</h2>
+<p style="
+  font-size: 1.1em;
+  margin-bottom: 1.4em;
+">
+  Try again later or go back to the home page.
+</p>
+<%= link_to "Home", :expo_entries, class: "btn", style: "font-size: 1.2em; padding: 10px 35px; margin-top: 1em;" %>
+</div>
+<% end %>
 
 </body>
 </html>
