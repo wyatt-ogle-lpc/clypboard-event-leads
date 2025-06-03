@@ -49,7 +49,7 @@ class EntriesController < ApplicationController
     end
 
         if @entry.save
-          #ClypboardLeadJob.perform_later(@entry.id)
+          ClypboardLeadJob.perform_later(@entry.id)
           Rails.logger.info "ENQUEUED ClypboardLeadJob for Entry ID: #{@entry.id}"
 
           if @expo.present?
