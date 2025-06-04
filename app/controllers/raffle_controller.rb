@@ -7,8 +7,8 @@ class RaffleController < ApplicationController
 
         time_limit = 24.hours.ago
 
-        @entries = Entry.where(expo: @expo, raffled: [false, nil])
-                    .where("created_at >= ?", time_limit)
+        @entries = Entry.where("LOWER(expo) = ?", @expo.to_s.downcase)
+                        .where("created_at >= ?", time_limit)
 
         #only wants entries from the last 24 hours to eliminate invalid entries
         
