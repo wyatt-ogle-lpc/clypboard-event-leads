@@ -76,6 +76,13 @@
             ctx.fill();
           }
 
+          // Example for dynamic line width based on segment count
+          let baseLineWidth = 6; // max thickness for few entries
+          let minLineWidth = 1;  // minimum for lots of entries
+
+          // Make line thinner as segments increase
+          let dynamicLineWidth = Math.max(minLineWidth, baseLineWidth - (segmentCount / 8));
+
           // Draw Dividing Lines
           for (let i = 0; i < segmentCount; i++) {
             const angle = i * arc + rotation;
@@ -83,14 +90,14 @@
             ctx.moveTo(center, center);
             ctx.lineTo(center + radius * Math.cos(angle), center + radius * Math.sin(angle));
             ctx.strokeStyle = "#191919"; // or any light contrasting color
-            ctx.lineWidth = 3;           // adjust for thinner or thicker lines
+            ctx.lineWidth = dynamicLineWidth;           // adjust for thinner or thicker lines
             ctx.stroke();
           }
             // Draw outer circle
             ctx.beginPath();
             ctx.arc(center, center, radius, 0, 2 * Math.PI);
             ctx.strokeStyle = "#191919"; // or "#1c1c1c" or any color you like
-            ctx.lineWidth = 3;           // thicker for outer outline
+            ctx.lineWidth = dynamicLineWidth*1.5;           // thicker for outer outline
             ctx.stroke();
             
             // Draw inner circle (if intended)
@@ -102,18 +109,23 @@
             ctx.lineWidth = 2;   
             ctx.stroke();
 
-            // Draw labels
+            // Calculate font size based on the number of entries
+            let baseFontSize = 28; // px, for few entries
+            let minFontSize = 11;  // px, for very crowded wheels
+            let fontSize = Math.max(minFontSize, baseFontSize - segmentCount * 1.2); // tweak 1.2 as needed
+            
             for (let i = 0; i < segmentCount; i++) {
               const angle = i * arc + rotation + arc / 2;
               ctx.save();
               ctx.translate(center, center);
               ctx.rotate(angle);
               ctx.textAlign = "right";
-              ctx.font = "1.5em Bebas Neue Bold";
+              ctx.font = `${fontSize}px Bebas Neue Bold, Arial, sans-serif`;
               ctx.fillStyle = "#191919";
               ctx.fillText(entries[i], radius - 18, 5);
               ctx.restore();
             }
+            
 
             // Draw pointer
             ctx.beginPath();
