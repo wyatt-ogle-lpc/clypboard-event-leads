@@ -12,7 +12,7 @@
       <%= image_tag "logo.png", alt: "Logo", class: "logo" %>
     </div>
     <h1 style="text-align:center;">Enter Your Information</h1>
-    <h3 style="text-align:center;">click submit to play a game and be entered into the raffle</h3>
+    <h3 style="text-align:center;">click submit to play a game</h3>
 
 
     <%= form_with model: @entry, url: @expo.present? ? expo_entries_path(@expo) : entries_path, data: { turbo: false }, local: true do |form| %>

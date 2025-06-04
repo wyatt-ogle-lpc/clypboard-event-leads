@@ -7,9 +7,11 @@ class RaffleController < ApplicationController
 
         time_limit = 24.hours.ago
 
-        @entries = Entry.where("LOWER(expo) = ?", @expo.to_s.downcase)
-                        .where("created_at >= ?", time_limit)
-                        .select("DISTINCT ON (name, address) *") #dup checking
+        entries = Entry
+            .where("LOWER(expo) = ?", @expo.to_s.downcase)
+            .where("created_at >= ?", time_limit)
+
+        @entries = entries.uniq { |e| [e.name, e.address] }
 
         
 
@@ -20,7 +22,7 @@ class RaffleController < ApplicationController
         end
           
         
-        @winner = @entries.order("RANDOM()").first
+        @winner = @entries.sample
 
         if @winner
             Rails.logger.debug "[DEBUG] Winner is: #{@winner.name} email: #{@winner.email}"
