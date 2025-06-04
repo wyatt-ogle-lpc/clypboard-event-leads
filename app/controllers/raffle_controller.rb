@@ -9,6 +9,9 @@ class RaffleController < ApplicationController
 
         @entries = Entry.where("LOWER(expo) = ?", @expo.to_s.downcase)
                         .where("created_at >= ?", time_limit)
+                        .select("DISTINCT ON (name, address) *") #dup checking
+
+        
 
         #only wants entries from the last 24 hours to eliminate invalid entries
         
