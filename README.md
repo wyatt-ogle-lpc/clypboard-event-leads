@@ -7,7 +7,7 @@ A full-stack web application built to streamline lead capture, validation, and r
 - Mobile-optimized landing page for live lead entry
 - Captures: `Name`, `Phone`, `Email`, `Address`, `Pest Type`, `Expo Name`, `Company`
 - Address validation via **Google Maps API**
-- Email quality scoring with **ZeroBounce API**
+- Email validation with **ZeroBounce API**
 - Company context enrichment using **OpenAI API + SerpAPI**
 - “Catch the Termite” mini-game to increase engagement
 - Raffle system with duplicate filtering
@@ -70,21 +70,6 @@ A full-stack web application built to streamline lead capture, validation, and r
    bundle exec sidekiq
    ```
 
-## 📋 Post-Trade Show Scripts
-
-After each event, the following maintenance scripts are run to enrich and clean the new lead data:
-
-- **Automatic BDM Assignment**  
-  Assigns leads to the correct Business Development Manager using spatial territory matching (PostGIS)
-
-- **Duplicate Location Matching**  
-  Geocodes new leads and matches to existing customers via Google Place IDs
-
-- **Lead Source Assignment**  
-  Tags each lead with the corresponding expo for ROI reporting
-
-These scripts ensure clean data routing and reduce manual overhead for the sales team.
-
 ## 🛠️ Deploying to Production (DigitalOcean)
 
 1. SSH into your droplet
@@ -115,21 +100,6 @@ These scripts ensure clean data routing and reduce manual overhead for the sales
 To edit Rails credentials securely:
 ```bash
 EDITOR="nano" bin/rails credentials:edit
-```
-
-## 🛠️ Developer Tips (Optional)
-
-Generate a new migration:
-```bash
-rails generate migration AddFieldToModel field:type
-```
-
-Standard Git workflow:
-```bash
-git status
-git add .
-git commit -m "Your message"
-git push origin main
 ```
 
 ## 📁 File Structure Overview
