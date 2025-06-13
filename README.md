@@ -2,7 +2,7 @@
 
 A full-stack web application built to streamline lead capture, validation, and routing at expos and trade shows for pest control companies.
 
-## 🥉 Features
+## Features
 
 - Aesthetic landing page for live lead entry
 - Captures: `Name`, `Phone`, `Email`, `Address`, `Company`, `Property Name`, `Pest Issues`, `Expo Name`
@@ -13,7 +13,7 @@ A full-stack web application built to streamline lead capture, validation, and r
 - Raffle system with duplicate filtering
 - Structured lead storage for post-event processing
 
-## ⚙️ Stack
+## Stack
 
 - **Backend:** Ruby on Rails
 - **Frontend:** HTML, CSS, JavaScript
@@ -22,7 +22,7 @@ A full-stack web application built to streamline lead capture, validation, and r
 - **Asset Pipeline:** Propshaft
 - **Deployment:** DigitalOcean (Puma server)
 
-## 🔌 APIs Used
+## APIs Used
 
 | API         | Purpose                         |
 | ----------- | ------------------------------- |
@@ -31,7 +31,7 @@ A full-stack web application built to streamline lead capture, validation, and r
 | OpenAI API  | Company summary generation      |
 | SerpAPI     | Web searching for company details |
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 1. **Clone the repo:**
 
@@ -74,9 +74,9 @@ A full-stack web application built to streamline lead capture, validation, and r
    bundle exec sidekiq
    ```
 
-## 🛠️ Deploying to Production (DigitalOcean)
+## Deploying to Production (DigitalOcean)
 
-### ✅ Environment Preparation (before first deploy)
+### Environment Preparation (before first deploy)
 
 If this hasn’t been done on your droplet:
 
@@ -85,7 +85,7 @@ sudo apt update
 sudo apt install -y nodejs yarn postgresql libpq-dev redis
 ```
 
-### ✅ Deployment Steps
+### Deployment Steps
 
 1. SSH into your droplet
 
@@ -115,7 +115,7 @@ sudo apt install -y nodejs yarn postgresql libpq-dev redis
    sudo systemctl status sidekiq
    ```
 
-### ✅ Auto-Start Services
+### Auto-Start Services
 
 Ensure these are enabled so they persist across restarts:
 
@@ -124,7 +124,7 @@ sudo systemctl enable clypboard-puma
 sudo systemctl enable sidekiq
 ```
 
-## 🔐 API Keys and Credentials
+## API Keys and Credentials
 
 To edit Rails credentials securely:
 
@@ -132,7 +132,7 @@ To edit Rails credentials securely:
 EDITOR="nano" bin/rails credentials:edit
 ```
 
-## 📁 File Structure Overview
+## File Structure Overview
 
 ```
 app/
@@ -146,12 +146,12 @@ lib/
 public/
 ```
 
-## 👥 Contributors
+## Contributors
 
 - Wyatt Ogle – Developer
 - Lloyd Pest Control – Client Organization
 
-## 📬 Questions?
+## Questions?
 
 Feel free to reach out for implementation details or adaptation suggestions:\
 [**wyatt.ogle@lloydpest.com**](mailto\:wyatt.ogle@lloydpest.com)
