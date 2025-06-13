@@ -4,8 +4,8 @@ A full-stack web application built to streamline lead capture, validation, and r
 
 ## 🥉 Features
 
-- Mobile-optimized landing page for live lead entry
-- Captures: `Name`, `Phone`, `Email`, `Address`, `Pest Type`, `Expo Name`, `Company`
+- Aesthetic landing page for live lead entry
+- Captures: `Name`, `Phone`, `Email`, `Address`, `Company`, `Property Name`, `Pest Issues`, `Expo Name`
 - Address validation via **Google Maps API**
 - Email quality scoring with **ZeroBounce API**
 - Company context enrichment using **OpenAI API + SerpAPI**
@@ -29,7 +29,7 @@ A full-stack web application built to streamline lead capture, validation, and r
 | Google Maps | Address validation & geocoding  |
 | ZeroBounce  | Email verification and scoring  |
 | OpenAI API  | Company summary generation      |
-| SerpAPI     | Business details for enrichment |
+| SerpAPI     | Web searching for company details |
 
 ## 🛠️ Setup Instructions
 
