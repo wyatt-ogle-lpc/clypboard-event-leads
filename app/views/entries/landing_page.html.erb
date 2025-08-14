@@ -29,14 +29,17 @@
     data: { turbo: false },
     local: true,
     html: { id: "entry_form" } do |form| %>
-      <!-- Expo name setter (hidden automatically if URL already has one) -->
-      <div id="expo_setter" class="form-field" style="margin-bottom: 12px;">
-        <label for="expo_name">Expo / Raffle Name</label>
-        <input type="text" id="expo_name" placeholder="Enter expo name" />
-        <button type="button" id="set_expo_btn" class="btn" style="margin-left: 8px;">
-          Submit Expo
-        </button>
-      </div>
+
+
+      <% unless @expo.present? %>
+        <div id="expo_setter" class="form-field" style="margin-bottom: 12px;">
+          <label for="expo_name">Expo / Raffle Name</label>
+          <input type="text" id="expo_name" placeholder="Enter expo name" />
+          <button type="button" id="set_expo_btn" class="btn" style="margin-left: 8px;">
+            Submit Expo
+          </button>
+        </div>
+      <% end %>
 
       <div class="form-row">
       <div class="form-field">
