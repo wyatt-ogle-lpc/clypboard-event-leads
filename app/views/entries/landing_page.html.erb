@@ -24,8 +24,21 @@
 
 
 
-    <%= form_with model: @entry, url: @expo.present? ? expo_entries_path(@expo) : entries_path, data: { turbo: false }, local: true do |form| %>
-    <div class="form-row">
+    <%= form_with model: @entry,
+    url: @expo.present? ? expo_entries_path(@expo) : entries_path,
+    data: { turbo: false },
+    local: true,
+    html: { id: "entry_form" } do |form| %>
+      <!-- Expo name setter (hidden automatically if URL already has one) -->
+      <div id="expo_setter" class="form-field" style="margin-bottom: 12px;">
+        <label for="expo_name">Expo / Raffle Name</label>
+        <input type="text" id="expo_name" placeholder="Enter expo name" />
+        <button type="button" id="set_expo_btn" class="btn" style="margin-left: 8px;">
+          Submit Expo
+        </button>
+      </div>
+
+      <div class="form-row">
       <div class="form-field">
         <%= form.label :name, ("Name <span style='color: #d03e3e;'>*</span>").html_safe %>
         <%= form.text_field :name, required: true, placeholder: "John Smith" %>
@@ -106,49 +119,84 @@
 
     <% end %>
 
-    <script>
+   <script>
+function initAutocomplete() {
+  var input = document.getElementById('entry_address');
+  if (input && typeof google !== "undefined" && google.maps && google.maps.places) {
+    new google.maps.places.Autocomplete(input, {
+      types: ['address'],
+      componentRestrictions: { country: 'us' }
+    });
+  }
+}
 
-    function initAutocomplete() {
-      var input = document.getElementById('entry_address');
-      if (input) {
-        var autocomplete = new google.maps.places.Autocomplete(input, {
-          types: ['address'],
-          componentRestrictions: { country: 'us' }
-        });
-      }
+window.gm_authFailure = function() {
+  console.error('Google Maps auth failed (key/referrer/billing).');
+  alert('Maps/Places failed to load. Check API key, billing, and referrer restrictions.');
+};
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Phone formatting
+  var phone = document.getElementById("phone_number");
+  if (phone) {
+    phone.addEventListener("input", function() {
+      var x = phone.value.replace(/\D/g, '').substring(0,10);
+      var f = "";
+      if (x.length > 0) f = "(" + x.substring(0,3);
+      if (x.length >= 4) f += ") " + x.substring(3,6);
+      if (x.length >= 7) f += "\u2009-\u2009" + x.substring(6,10);
+      phone.value = f;
+    });
+  }
+
+  // Google Places init (defer-safe)
+  if (typeof google !== "undefined" && google.maps && google.maps.places) {
+    initAutocomplete();
+  } else {
+    window.initAutocomplete = initAutocomplete;
+  }
+
+  // --- Expo name redirect logic ---
+  const expoSetter = document.getElementById("expo_setter");
+  const expoInput  = document.getElementById("expo_name");
+  const expoBtn    = document.getElementById("set_expo_btn");
+  const form       = document.getElementById("entry_form");
+
+  // Detect /entries/:expoName
+  const parts = window.location.pathname.split("/").filter(Boolean);
+  const expoFromUrl = (parts.length >= 2 && parts[0] === "entries") ? parts[1] : null;
+
+  // If already on /entries/:expoName, hide the setter and ensure form posts to that URL
+  if (expoFromUrl && expoSetter) {
+    expoSetter.style.display = "none";
+    if (form) {
+      // Ensure POST goes to /entries/:expoName
+      form.action = form.action.replace(/\/$/, "") + "/" + encodeURIComponent(expoFromUrl);
     }
+  }
 
-      document.addEventListener("DOMContentLoaded", function() {
-        var input = document.getElementById("phone_number");
-        if (!input) return;
-        
-        input.addEventListener("input", function(e) {
-          var x = input.value.replace(/\D/g, '').substring(0,10); // Only numbers, max 10 digits
-          var formatted = "";
+  // When user clicks "Submit Expo", redirect to /entries/:expoName and hide the section
+  if (expoBtn && expoInput) {
+    expoBtn.addEventListener("click", function() {
+      const name = expoInput.value.trim();
+      if (!name) { expoInput.focus(); return; }
 
-          if (x.length > 0) {
-            formatted = "(" + x.substring(0,3);
-          }
-          if (x.length >= 4) {
-            formatted += ") " + x.substring(3,6);
-          }
-          if (x.length >= 7) {
-            formatted += "\u2009"+ "-" + "\u2009"+ x.substring(6,10);
-          }
-          input.value = formatted;
-        });
-        // Initialize Places Autocomplete (after Google script is loaded)
-    if (typeof google !== "undefined" && google.maps && google.maps.places) {
-      initAutocomplete();
-    } else {
-      window.initAutocomplete = initAutocomplete;
-    }
-      });
-      window.gm_authFailure = function() {
-        console.error('Google Maps auth failed (key/referrer/billing).');
-        alert('Maps/Places failed to load. Check API key, billing, and referrer restrictions.');
-      };
-    </script>
+      // Hide immediately for clean UX
+      if (expoSetter) expoSetter.style.display = "none";
+
+      // Build target: /entries/:expoName
+      const base = (function() {
+        // If your form.action points to /entries (or /expo/:expo_id/entries), keep it simple:
+        // The user explicitly requested url/entries/:expo_name
+        return window.location.origin + "/entries";
+      })();
+
+      window.location.href = base.replace(/\/$/, "") + "/" + encodeURIComponent(name);
+    });
+  }
+});
+</script>
+
     
 
 
