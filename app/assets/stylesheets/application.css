@@ -60,7 +60,7 @@
 
 body {
     font-family: 'Proxima Nova Condensed Regular', sans-serif;
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
     padding: 20px;
     color: #1c1c1c;
@@ -103,13 +103,13 @@ body {
     font-family: 'Proxima Nova Condensed Regular', sans-serif;
     width: 100%;
     padding: 12px;
-    border: 1px solid #1c1c1c;
+    border: 1.2px solid #1c1c1c;
     border-radius: 4px;
     background-color: #FFFFFF;
     color: #1c1c1c;
     min-height: 50px; /* makes it visibly bigger */
     resize: vertical;
-    font-size: 1em;
+    font-size: 1.2em;
   }  
 
   .logo, .mouseLogo {
@@ -131,9 +131,9 @@ body {
   h1, h2, h5{
     font-family: 'Bebas Neue Bold', sans-serif;;
     color: #1c1c1c;
-    font-size: 3.5em;
-    margin-bottom: 20px;
-    margin-top: 20px;
+    font-size: 3.8em;
+    margin-bottom: 10px;
+    margin-top: 0;
   }
 
   h2{
@@ -144,9 +144,9 @@ body {
     text-align: center;
     font-family: 'Proxima Nova SCOSF Condensed Light', sans-serif;
     color: #1c1c1c;
-    font-size: 2em;
-    margin-bottom: 25px;
-    margin-top: -20px
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    margin-top: -10px
 
   }
 
@@ -164,7 +164,7 @@ body {
     font-family: 'Proxima Nova Condensed Regular', Arial, sans-serif;
     font-weight: 600;
     color: #1c1c1c;
-    font-size: 1.5em;
+    font-size: 1.8em;
     margin-bottom: 45px;
   }
   
@@ -172,7 +172,7 @@ body {
     display: block;
     margin-bottom: 2px;
     color: #1c1c1c;
-    font-size: 1.1em;
+    font-size: 1.5em;
   }
 
 
@@ -180,11 +180,15 @@ body {
   input[type="text"], input[type="email"], input[type="url"], input[type="tel"] {
     font-family: 'Proxima Nova Condensed Regular', sans-serif;
     width: 100%;
-    padding: 8px;
-    border: 1px solid #1c1c1c;
+    padding: 6px;
+    border: 1.2px solid #1c1c1c;
     border-radius: 4px;
     background-color: #FFFFFF;
     color: #1c1c1c;
+  }
+
+  input::placeholder {
+    font-size: 1.2em;
   }
   
   .form-actions {
@@ -203,7 +207,7 @@ body {
     background-color: #9c481a;
     color: #FFFFFF;
     padding: 10px;      /* Make the button taller and wider */
-    font-size: 1.5em; 
+    font-size: 1.8em; 
     border: none;
     border-radius: 4px;
     margin-top: 10px;
@@ -218,7 +222,7 @@ body {
   
   .error {
     color: #880000;
-    font-size: 0.9em;
+    font-size: 1em;
   }
   
   .btn {
@@ -226,7 +230,7 @@ body {
     background-color: #9c481a;
     color: #FFFFFF;
     padding: 10px 25px;      /* Make the button taller and wider */
-    font-size: 1.5em; 
+    font-size: 1.8em; 
     border: none;
     border-radius: 4px;
     margin-top: 6px;
