@@ -60,11 +60,12 @@
 
 body {
     font-family: 'Proxima Nova Condensed Regular', sans-serif;
-    max-width: 900px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 0;
     color: #1c1c1c;
     min-height: 100vh;
+    overflow-y: hidden;
   }
   
   .logo-container {
@@ -116,10 +117,10 @@ body {
     display: block;
     text-align: left;
     margin: 0 auto bpx;
-    max-width: 250px; /* Adjust based on your logo size */
+    max-width: 300px; /* Adjust based on your logo size */
     display: inline-block; /* Ensures the logo behaves as an inline element */
     height: auto;
-    margin-top: 10px;
+    margin-top: 0;
   }
 
   .mouseLogo{
@@ -131,7 +132,7 @@ body {
   h1, h2, h5{
     font-family: 'Bebas Neue Bold', sans-serif;;
     color: #1c1c1c;
-    font-size: 3.8em;
+    font-size: 3.2em;
     margin-bottom: 10px;
     margin-top: 0;
   }
@@ -144,7 +145,7 @@ body {
     text-align: center;
     font-family: 'Proxima Nova SCOSF Condensed Light', sans-serif;
     color: #1c1c1c;
-    font-size: 2.2em;
+    font-size: 1.8em;
     margin-bottom: 10px;
     margin-top: -10px
 
@@ -195,7 +196,7 @@ body {
     text-align: center;
     justify-content: space-between;
     align-items: center;
-    margin-top: 24px;
+    margin-top: 12px;
   }
 
   ::placeholder {
@@ -206,11 +207,11 @@ body {
     font-family: 'Proxima Nova SCOSF Condensed Regular';
     background-color: #9c481a;
     color: #FFFFFF;
-    padding: 10px;      /* Make the button taller and wider */
+    padding: 8px;      /* Make the button taller and wider */
     font-size: 1.8em; 
     border: none;
     border-radius: 4px;
-    margin-top: 10px;
+    margin-top: 0;
     cursor: pointer;
     
   }
@@ -266,3 +267,77 @@ body {
     }
   }
 
+/* --- Keep title centered and on one line --- */
+.page-header {
+  /* match the body width and center the header block */
+  max-width: 1000px;
+  margin: 16px auto 24px;
+}
+
+/* Put H1 and H3 on a single row, centered, no wrapping */
+.title-wrap {
+  display: flex;
+  align-items: baseline;     /* nicer alignment since H1 is larger */
+  gap: 12px;
+  white-space: nowrap;       /* prevent line breaks */
+  overflow: hidden;          /* avoid layout spill on tiny screens */
+  text-overflow: ellipsis;
+  min-width: 0;    
+  flex-direction: column;     
+  justify-content: center;   
+  align-items: center;
+}
+
+/* Keep your existing typography, but make it scale so it stays one line */
+.title-wrap h1 {
+  margin: 0;
+  margin-top: 10px;
+  font-family: 'Bebas Neue Bold', sans-serif;
+  color: #1c1c1c;
+  font-size: clamp(2rem, 6vw, 3.2em);   /* scales down on small screens */
+  line-height: 1.1;
+}
+
+.title-wrap h3 {
+  margin: 0;
+  font-family: 'Proxima Nova SCOSF Condensed Light', sans-serif;
+  color: #1c1c1c;
+  font-size: clamp(1rem, 3.5vw, 1.8em); /* scales down on small screens */
+  line-height: 1.2;
+  
+}
+
+/* Keep the 3-column centering trick you already have */
+.page-header {
+  --logo-width: 250px;
+  display: grid;
+  grid-template-columns: var(--logo-width) 1fr var(--logo-width);
+  align-items: center;
+  gap: 16px;
+  padding: 0;
+}
+
+/* Logo hard-left, size matches the --logo-width */
+.logo-wrap .logo {
+  width: var(--logo-width);
+  max-width: 100%;
+  height: auto;
+  margin: 0;
+  display: block;
+}
+
+/* Invisible right "balancer" keeps the middle column perfectly centered */
+.balancer { width: var(--logo-width); }
+
+/* Mobile: if it truly can’t fit, stack gracefully */
+@media (max-width: 700px) {
+  .page-header {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    text-align: center;
+  }
+  .balancer { display: none; }
+  .title-wrap {
+    white-space: normal;         /* allow wrapping on very small screens */
+  }
+}

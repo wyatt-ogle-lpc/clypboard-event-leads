@@ -8,11 +8,20 @@
     <%= stylesheet_link_tag 'application', media: 'all' %>
   </head>
   <body>
-     <div class="logo-container">
-      <%= image_tag "logo.png", alt: "Logo", class: "logo" %>
-    </div>
-    <h1 style="text-align:center;">Enter Your Information</h1>
-    <h3 style="text-align:center;">click submit to play a game</h3>
+    <header class="page-header">
+      <div class="logo-wrap">
+        <%= image_tag "logo.png", alt: "Logo", class: "logo" %>
+      </div>
+
+      <div class="title-wrap">
+        <h1>Enter Your Information</h1>
+        <h3>click submit to play a game</h3>
+      </div>
+
+      <!-- invisible spacer to keep the title perfectly centered -->
+      <div class="balancer" aria-hidden="true"></div>
+    </header>
+
 
 
     <%= form_with model: @entry, url: @expo.present? ? expo_entries_path(@expo) : entries_path, data: { turbo: false }, local: true do |form| %>
