@@ -144,8 +144,12 @@
       window.initAutocomplete = initAutocomplete;
     }
       });
+      window.gm_authFailure = function() {
+        console.error('Google Maps auth failed (key/referrer/billing).');
+        alert('Maps/Places failed to load. Check API key, billing, and referrer restrictions.');
+      };
     </script>
-
+    
 
 
 

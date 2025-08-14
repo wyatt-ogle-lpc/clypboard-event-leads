@@ -344,3 +344,8 @@ body {
     white-space: normal;         /* allow wrapping on very small screens */
   }
 }
+
+/* Put this near the end of application.css or in a new file loaded last */
+body .pac-container { font-size: 1.4rem !important; }
+body .pac-container .pac-item { font-size: 1.4rem !important; line-height: 2.2rem !important; padding: 12px 10px !important; }
+body .pac-container .pac-item-query { font-size: 1.4rem !important; font-weight: 600 !important; }
