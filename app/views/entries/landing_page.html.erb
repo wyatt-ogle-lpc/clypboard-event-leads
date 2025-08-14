@@ -169,9 +169,9 @@ document.addEventListener("DOMContentLoaded", function() {
   // If already on /entries/:expoName, hide the setter and ensure form posts to that URL
   if (expoFromUrl && expoSetter) {
     expoSetter.style.display = "none";
-    if (form) {
-      // Ensure POST goes to /entries/:expoName
-      form.action = form.action.replace(/\/$/, "") + "/" + encodeURIComponent(expoFromUrl);
+    if (expoFromUrl && expoSetter) {
+      expoSetter.style.display = "none";
+      // Do NOT touch form.action here.
     }
   }
 
